@@ -5,8 +5,7 @@ Servo pitch;// create servo object to control a servo
 // twelve servo objects can be created on most boards
 
 void setup() {
-  yaw.attach(9);  // attaches the servo on pin 9 to the servo object
-  pitch.attach(10);  // attaches the servo on pin 9 to the servo object
+  Serial.begin(9600);
 }
 
 void point(int horz, int vert) {
@@ -38,14 +37,37 @@ void fullSweep(int startPos, int maxAngle, int delayTime) {
   }
 }
 
-void loop() {
+void dance(){
+  yaw.attach(9);  // attaches the servo on pin 9 to the servo object
+  pitch.attach(10);  // attaches the servo on pin 9 to the servo object
+  point(45,45);
   int count = 0;
-  for ( count = 0; count < 20; count += 1) {
+  for ( count = 0; count < 3; count += 1) {
     // Close fast sweep
     fullSweep(random(160, 180), random(60, 100), random(5, 20));
     point(random(0.45), random(160, 180));
     delay(1000 * random(10, 15));
   }
   exit(0);
+}
+
+void handleSerial() {
+ while (Serial.available() > 0) {
+   char incomingCharacter = Serial.read();
+   switch (incomingCharacter) {
+     case '+':
+      Serial.println("hello");
+      dance();
+      break;
+
+     case '-':
+      Serial.println("byeee");
+      break;
+    }
+ }
+}
+
+void loop() {
+  handleSerial();
 }
 
